@@ -3,61 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviation Weather Academy</title>
+    <title>Pro Aviation Weather Academy: UK & Europe</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f7f9; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .report-box { background: #2c3e50; color: #ecf0f1; padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 1.2em; border-left: 5px solid #3498db; border-radius: 4px; }
-        .highlight { color: #f1c40f; font-weight: bold; }
-        button { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; }
-        button:hover { background: #2980b9; }
-        .quiz-option { display: block; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        .quiz-option:hover { background: #e8f4fd; }
-        .hidden { display: none; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #2d3436; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 15px rgba(0,0,0,0.05); margin-bottom: 25px; border-top: 5px solid #0984e3; }
+        h1 { color: #0984e3; text-align: center; }
+        .code-block { background: #2d3436; color: #fab1a0; padding: 20px; border-radius: 8px; font-family: 'Monaco', 'Courier New', monospace; font-size: 1.1em; overflow-x: auto; }
+        .highlight { color: #55efc4; font-weight: bold; }
+        .danger { color: #ff7675; font-weight: bold; }
+        button { background: #0984e3; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        button:hover { background: #74b9ff; transform: translateY(-2px); }
+        .quiz-container { display: none; }
+        .option { display: block; background: #f9f9f9; padding: 15px; margin: 10px 0; border: 2px solid #dfe6e9; border-radius: 8px; cursor: pointer; }
+        .option:hover { border-color: #0984e3; background: #e1f5fe; }
+        .status-tag { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-bottom: 10px; }
+        .tag-cat3 { background: #fdcb6e; color: #6d4c11; }
+        .tag-mountain { background: #a29bfe; color: #2d3436; }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>✈️ METAR & TAF Academy</h1>
-        <p>Mastering aviation weather, one code at a time.</p>
+        <h1>✈️ Pro Pilot Weather Academy</h1>
+        <p style="text-align: center;">Mastering UK & European Operations: EGLC, FNC, CMF, INN</p>
     </header>
 
-    <div id="lesson-1" class="card">
-        <h2>Lesson 1: The Anatomy of a METAR</h2>
-        <p>A <strong>METAR</strong> is a snapshot of current weather. Let's look at this example:</p>
-        <div class="report-box">
-            METAR <span class="highlight">KLAX</span> 121853Z <span class="highlight">25015G25KT</span> 5SM BR FEW020 18/12 A2992
+    <div id="lesson" class="card">
+        <span class="status-tag tag-cat3">HUB: LONDON CITY (EGLC)</span>
+        <h2>The London City Special</h2>
+        <p>EGLC uses a steep 5.5° approach. Low visibility and specific "minima" (minimum visibility allowed to land) are critical here. Look at this real-world complex METAR:</p>
+        
+        <div class="code-block">
+            EGLC 150920Z <span class="highlight">26012KT</span> <span class="highlight">0400</span> <span class="highlight">R27/0600D</span> <span class="highlight">FG</span> VV001 05/05 <span class="highlight">Q0998</span>
         </div>
-        <ul>
-            <li><strong>KLAX:</strong> The airport (Los Angeles).</li>
-            <li><strong>25015G25KT:</strong> Wind from 250° at 15 knots, gusting to 25.</li>
+        
+        <ul style="margin-top: 20px;">
+            <li><strong>0400:</strong> General visibility is only 400 meters.</li>
+            <li><strong>R27/0600D:</strong> Runway 27 Visual Range is 600m and <strong>D</strong>ecreasing.</li>
+            <li><strong>FG / VV001:</strong> Fog with "Vertical Visibility" of 100ft (You are in the soup!).</li>
+            <li><strong>Q0998:</strong> UK/EU use Hectopascals (QNH), not inches of mercury (A2992).</li>
         </ul>
-        <button onclick="showQuiz()">Take the Lesson 1 Quiz</button>
+        <button onclick="startQuiz()">Enter Knowledge Test</button>
     </div>
 
-    <div id="quiz-1" class="card hidden">
-        <h2>Quick Quiz</h2>
-        <p>In the report: <code>21010KT</code>, what does the "210" represent?</p>
-        <div class="quiz-option" onclick="checkAnswer(false)">The wind speed is 210 knots</div>
-        <div class="quiz-option" onclick="checkAnswer(true)">The wind is coming FROM 210 degrees</div>
-        <div class="quiz-option" onclick="checkAnswer(false)">The temperature is 21.0 degrees</div>
+    <div id="quiz" class="card quiz-container">
+        <h2 id="question-title">Quiz: Stage 1</h2>
+        <p id="question-text"></p>
+        <div id="options-container"></div>
         <p id="feedback"></p>
+        <button id="next-btn" class="hidden" onclick="nextQuestion()" style="display:none;">Next Question</button>
     </div>
 
     <script>
-        function showQuiz() {
-            document.getElementById('lesson-1').classList.add('hidden');
-            document.getElementById('quiz-1').classList.remove('hidden');
+        const quizData = [
+            {
+                title: "Funchal (LPMA/FNC) Challenge",
+                text: "The report says: <b>31015G35KT 280V340</b>. What is the main hazard?",
+                options: [
+                    "Heavy rain reducing visibility",
+                    "Severe windshear and gusts from varying directions",
+                    "The runway is closed due to snow"
+                ],
+                correct: 1,
+                explanation: "Correct! FNC is famous for mountain-induced windshear. 'G35' means 35kt gusts, and '280V340' means the wind is swinging between 280° and 340°."
+            },
+            {
+                title: "Innsbruck (LOWI/INN) Logic",
+                text: "You see <b>VV005</b> in a valley airport. What does this mean?",
+                options: [
+                    "Visibility is 5 kilometers",
+                    "Vertical Visibility (Ceiling) is 500 feet",
+                    "The wind is 5 knots from the North"
+                ],
+                correct: 1,
+                explanation: "Correct! When the sky is obscured by fog or snow in a valley, VV (Vertical Visibility) tells you how far up you can see."
+            },
+            {
+                title: "European Code: CAVOK",
+                text: "A report for Chambéry (LFLB) says <b>CAVOK</b>. Can you see the mountains?",
+                options: [
+                    "No, CAVOK means the airport is closed",
+                    "Yes, visibility is 10km+ and no clouds below 5000ft",
+                    "Maybe, but there is heavy rain"
+                ],
+                correct: 1,
+                explanation: "Spot on. CAVOK = Ceiling and Visibility OK. No clouds below 5,000ft (or the highest minimum sector altitude) and 10km+ visibility."
+            }
+        ];
+
+        let currentQ = 0;
+
+        function startQuiz() {
+            document.getElementById('lesson').style.display = 'none';
+            document.getElementById('quiz').style.display = 'block';
+            showQuestion();
         }
-        function checkAnswer(isCorrect) {
+
+        function showQuestion() {
+            const q = quizData[currentQ];
+            document.getElementById('question-title').innerText = q.title;
+            document.getElementById('question-text').innerHTML = q.text;
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = opt;
+                div.onclick = () => selectOption(i);
+                container.appendChild(div);
+            });
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('next-btn').style.display = 'none';
+        }
+
+        function selectOption(index) {
+            const q = quizData[currentQ];
             const feedback = document.getElementById('feedback');
-            if(isCorrect) {
-                feedback.innerHTML = "✅ <strong>Correct!</strong> Wind direction is always the first 3 digits.";
-                feedback.style.color = "green";
+            if(index === q.correct) {
+                feedback.innerHTML = "✅ " + q.explanation;
+                feedback.className = "highlight";
+                document.getElementById('next-btn').style.display = 'block';
             } else {
-                feedback.innerHTML = "❌ <strong>Try again!</strong> Hint: The first three numbers are the direction.";
-                feedback.style.color = "red";
+                feedback.innerHTML = "❌ Not quite. Review the codes and try again!";
+                feedback.className = "danger";
+            }
+        }
+
+        function nextQuestion() {
+            currentQ++;
+            if(currentQ < quizData.length) {
+                showQuestion();
+            } else {
+                document.getElementById('quiz').innerHTML = "<h2>Mission Accomplished! 🏆</h2><p>You have a solid handle on complex UK and European weather. Ready for your check-ride?</p><button onclick='location.reload()'>Restart Academy</button>";
             }
         }
     </script>
